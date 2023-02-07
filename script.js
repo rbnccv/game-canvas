@@ -71,8 +71,45 @@ window.addEventListener('load', function () {
     }
   }
 
+  class Obstacle{
+    constructor(game){
+      this.game = game
+      this.collisionX = Math.random() * this.game.width
+      this.collisionY = Math.random() * this.game.height
 
-  class Obstacle{}
+      this.collisionRadio = 60
+
+      this.image = document.getElementById('obstacles')
+      this.spriteWidth  = 250
+      this.spriteHeight = 250
+      this.width  = this.spriteWidth
+      this.height = this.spriteHeight
+
+      this.spriteX = this.collisionX - this.width  * .5
+      this.spriteY = this.collisionY - this.height * .5
+    }
+
+    draw(context){
+      context.drawImage(
+        this.image, 0, 0, 
+        this.spriteWidth, 
+        this.spriteHeight, 
+        this.spriteX, 
+        this.spriteY,
+        this.width,
+        this.height)
+      
+      context.beginPath()
+      context.arc(this.collisionX, this.collisionY, this.collisionRadio, 0, (2 * Math.PI))
+      context.save()
+      context.globalAlpha = 0.5
+      context.fill()
+      context.restore()
+      context.stroke()
+    }
+
+    update(context){}
+  }
 
   class Game {
     constructor(canvas){
@@ -81,7 +118,10 @@ window.addEventListener('load', function () {
       this.width  = this.canvas.width
       this.height = this.canvas.height
 
-      this.player = new Player(this)
+      this.player    = new Player(this)
+      
+      this.obstacles         = []
+      this.numberOFObstacles = 1
 
       this.mouse = {
         x: this.width * .5,
@@ -107,18 +147,49 @@ window.addEventListener('load', function () {
           this.mouse.x = e.offsetX
           this.mouse.y = e.offsetY
         }
-
-        //console.log(this.mouse);
+        
       })
     }
 
     render(context){
       this.player.draw(context)
       this.player.update(context)
+
+      this.obstacles.forEach(obstacle => obstacle.draw(context))
+    }
+
+    init(){
+
+      let attemps = 0
+
+      while (this.obstacles.length < this.numberOFObstacles && attemps < 500) {
+        let testObstacle = new Obstacle(this)
+        let overlap      = false
+
+        this.obstacles.forEach(obstacle => {
+          const dx = testObstacle.collisionX - obstacle.collisionX
+          const dy = testObstacle.collisionY - obstacle.collisionY
+          
+          const distance   = Math.hypot(dy, dx)
+          const sumOfRadii = testObstacle.collisionRadio + obstacle.collisionRadio
+
+          if(distance < sumOfRadii) overlap = true
+        });
+
+        if(!overlap) this.obstacles.push(testObstacle)
+        
+        attemps++
+      }
+
+      /* for (let i = 0; i < this.numberOFObstacles; i++)
+        this.obstacles.push(new Obstacle(this)) */
     }
   }
 
   const game = new Game(canvas)
+  game.init()
+
+  console.log(game);
   
   function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height )
