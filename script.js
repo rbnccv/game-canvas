@@ -16,7 +16,7 @@ window.addEventListener('load', function () {
   class Player {
     constructor(game){
       this.game = game
-      this.collisionX     = this.game.width  * .5
+      this.collisionX     = this.game.width  * .1
       this.collisionY     = this.game.height * .5
       this.collisionRadio = 50
       
