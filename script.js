@@ -16,7 +16,7 @@ window.addEventListener('load', function () {
   class Player {
     constructor(game){
       this.game = game
-      this.collisionX     = this.game.width  * .1
+      this.collisionX     = this.game.width  * .5
       this.collisionY     = this.game.height * .5
       this.collisionRadio = 50
       
@@ -26,7 +26,7 @@ window.addEventListener('load', function () {
       this.dx = 0
       this.dy = 0
 
-      this.speedModifier = 2
+      this.speedModifier = 2 
     }
 
     draw(context){
@@ -54,20 +54,19 @@ window.addEventListener('load', function () {
       this.dy = this.game.mouse.y - this.collisionY
 
       // Para una velocidad CONSTANTE se toma como valor de ddistancia la hipotenusa entre el eje X e Y (velocidad constante)
-      // distancia entre lasCONSTANTE dy y dx (hipotenusa)
+      // distancia entre la CONSTANTE dy y dx (hipotenusa)
       const distance = Math.hypot(this.dy, this.dx)
 
-      if (distance > this.speedModifier){
+      if (distance > this.speedModifier){ // Evita el movimiento constante (temblor) 
         this.speedX = this.dx / distance || 0
         this.speedY = this.dy / distance || 0
-
       }else{
-        this.speedX = 0
+        this.speedX = 0 
         this.speedY = 0
       }
       
-      this.collisionX += this.speedX * this.speedModifier // el speedModifier aumenta la velocidad de desplazamiento
-      this.collisionY += this.speedY * this.speedModifier
+      this.collisionX += this.speedX * this.speedModifier // El speedModifier aumenta la velocidad de desplazamiento
+      this.collisionY += this.speedY * this.speedModifier // 
     }
   }
 
@@ -79,7 +78,7 @@ window.addEventListener('load', function () {
 
       this.collisionRadio = 60
 
-      this.image = document.getElementById('obstacles')
+      this.image        = document.getElementById('obstacles')
       this.spriteWidth  = 250
       this.spriteHeight = 250
       this.width  = this.spriteWidth
@@ -121,7 +120,7 @@ window.addEventListener('load', function () {
       this.player    = new Player(this)
       
       this.obstacles         = []
-      this.numberOFObstacles = 1
+      this.numberOFObstacles = 2
 
       this.mouse = {
         x: this.width * .5,
@@ -180,6 +179,8 @@ window.addEventListener('load', function () {
         
         attemps++
       }
+
+      console.log(attemps);
 
       /* for (let i = 0; i < this.numberOFObstacles; i++)
         this.obstacles.push(new Obstacle(this)) */
